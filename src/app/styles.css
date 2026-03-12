@@ -1,0 +1,160 @@
+﻿:root {
+  color: #d8e7ff;
+  background: radial-gradient(circle at 20% 10%, #20324a, #101923 56%);
+  font-family: 'Segoe UI', 'Consolas', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(16, 25, 35, 0.85);
+  border: 1px solid #2d4258;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.menu-screen {
+  display: grid;
+  gap: 12px;
+  width: min(520px, 100%);
+}
+
+.menu-screen label {
+  display: grid;
+  gap: 6px;
+}
+
+.menu-screen select,
+.menu-screen button {
+  background: #162433;
+  color: #d8e7ff;
+  border: 1px solid #35506d;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.inline {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.countdown-screen {
+  text-align: center;
+}
+
+.countdown-screen strong {
+  font-size: 96px;
+}
+
+.top-bar {
+  display: flex;
+  gap: 12px;
+  color: #9fb4c7;
+  margin-bottom: 10px;
+}
+
+.game-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  outline: none;
+}
+
+.practice-canvas {
+  width: 100%;
+  min-height: 420px;
+  background: #101923;
+  border: 1px solid #2d4258;
+  border-radius: 8px;
+}
+
+.hud-panel {
+  display: grid;
+  gap: 8px;
+  background: rgba(12, 19, 27, 0.8);
+  border: 1px solid #2d4258;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.hud-panel div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 10, 14, 0.75);
+  border-radius: 8px;
+}
+
+.pause-overlay div {
+  text-align: center;
+}
+
+.bottom-hint {
+  margin-top: 10px;
+  color: #9fb4c7;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.result-screen {
+  display: grid;
+  gap: 14px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.best-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 6px;
+}
+
+.history-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-panel li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px dashed #2d4258;
+}
+
+@media (max-width: 900px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-hint {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
