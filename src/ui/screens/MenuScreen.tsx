@@ -24,7 +24,7 @@ export const MenuScreen = ({ settings, onSaveSettings, onStart }: MenuScreenProp
   return (
     <section className="menu-screen card">
       <h1>Typing Rush</h1>
-      <p>Code typing practice for developers.</p>
+      <p>Code and English article typing practice.</p>
 
       <label>
         Duration
@@ -48,6 +48,7 @@ export const MenuScreen = ({ settings, onSaveSettings, onStart }: MenuScreenProp
           <option value="javascript">JavaScript</option>
           <option value="typescript">TypeScript</option>
           <option value="python">Python</option>
+          <option value="english">English</option>
         </select>
       </label>
 
@@ -85,3 +86,4 @@ export const MenuScreen = ({ settings, onSaveSettings, onStart }: MenuScreenProp
     </section>
   );
 };
+

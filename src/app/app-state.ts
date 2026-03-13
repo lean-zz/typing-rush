@@ -13,6 +13,12 @@ export type AppModel = {
   session: RunSession | null;
 };
 
+export type ControlKeyResult = {
+  handled: boolean;
+  screen: AppScreen;
+  session: RunSession | null;
+};
+
 const createInitialQueue = (): QueueState => ({ queueOfNextSnippets: [], recentSnippetIds: [] });
 
 export const createRunSession = (config: RunConfig, now: number): RunSession => {
@@ -53,7 +59,15 @@ export const applyInputToSession = (session: RunSession, key: string, now: numbe
     };
   }
 
-  const typedText = key === 'Enter' ? '\n' : key === 'Tab' ? '  ' : key;
+  const expectedChar = snippetText[session.currentIndex] ?? '';
+  const typedText =
+    key === 'Tab'
+      ? '  '
+      : session.config.language === 'english' && key === ' ' && expectedChar === '\n'
+        ? '\n'
+        : key === 'Enter'
+          ? '\n'
+          : key;
   const judged = applyTypingInput(
     typedText,
     snippetText,
@@ -98,6 +112,18 @@ export const applyInputToSession = (session: RunSession, key: string, now: numbe
   };
 };
 
+export const startTimerOnFirstInput = (previous: RunSession, next: RunSession, now: number): RunSession => {
+  if (previous.stats.totalTypedChars > 0 || next.stats.totalTypedChars <= 0) {
+    return next;
+  }
+
+  return {
+    ...next,
+    startedAt: now,
+    lastTickAt: now
+  };
+};
+
 export const tickSession = (session: RunSession, now: number): { session: RunSession; finished: boolean } => {
   const elapsed = now - session.lastTickAt;
   const remaining = Math.max(0, session.timeRemainingMs - elapsed);
@@ -120,3 +146,33 @@ export const tickSession = (session: RunSession, now: number): { session: RunSes
 export const nextScreen = (screen: AppScreen, type: Parameters<typeof transition>[1]['type']): AppScreen => {
   return transition({ screen }, { type }).screen;
 };
+
+export const applyControlKey = (
+  screen: AppScreen,
+  session: RunSession | null,
+  key: string,
+  now: number
+): ControlKeyResult => {
+  if (key !== 'Escape' || !session) {
+    return { handled: false, screen, session };
+  }
+
+  if (screen === 'playing') {
+    return {
+      handled: true,
+      screen: nextScreen(screen, 'PAUSE'),
+      session
+    };
+  }
+
+  if (screen === 'paused') {
+    return {
+      handled: true,
+      screen: nextScreen(screen, 'RESUME'),
+      session: { ...session, isFocused: true, lastTickAt: now }
+    };
+  }
+
+  return { handled: false, screen, session };
+};
+

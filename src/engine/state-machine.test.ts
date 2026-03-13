@@ -14,3 +14,4 @@ describe('state machine', () => {
     expect(ignored.screen).toBe('menu');
   });
 });
+

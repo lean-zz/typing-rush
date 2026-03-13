@@ -24,3 +24,4 @@ describe('snippet queue', () => {
     expect(next.state.queueOfNextSnippets.length).toBeGreaterThan(0);
   });
 });
+

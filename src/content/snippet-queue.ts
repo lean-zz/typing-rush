@@ -50,3 +50,4 @@ export const takeNextSnippet = (
 
   return { snippet, state: nextState };
 };
+

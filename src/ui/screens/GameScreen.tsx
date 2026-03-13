@@ -47,3 +47,4 @@ export const GameScreen = ({ session, paused, onInput, onResume }: GameScreenPro
     </section>
   );
 };
+

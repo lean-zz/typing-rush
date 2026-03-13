@@ -1,4 +1,4 @@
-﻿export type Language = 'javascript' | 'typescript' | 'python';
+﻿export type Language = 'javascript' | 'typescript' | 'python' | 'english';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 export type RunDuration = 300000 | 600000;
 export type AppScreen = 'menu' | 'countdown' | 'playing' | 'paused' | 'result';
@@ -24,8 +24,8 @@ export type RunStats = {
   correctChars: number;
   wrongChars: number;
   backspaceCount: number;
-  rawWpm: number;
-  wpm: number;
+  rawLpm: number;
+  lpm: number;
   accuracy: number;
   score: number;
   combo: number;
@@ -57,3 +57,5 @@ export type RunSession = {
   feedbackMessage: string;
   lastFeedbackMinute: number;
 };
+
+

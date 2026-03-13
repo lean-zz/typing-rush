@@ -4,17 +4,18 @@ import type { RunStats } from '../types';
 
 export const recalculateLiveStats = (stats: RunStats, elapsedMs: number): RunStats => {
   const elapsedMinutes = Math.max(elapsedMs / 60000, 1 / 60000);
-  const rawWpm = round2(stats.totalTypedChars / 5 / elapsedMinutes);
-  const wpm = round2(stats.correctChars / 5 / elapsedMinutes);
+  const rawLpm = round2(stats.totalTypedChars / elapsedMinutes);
+  const lpm = round2(stats.correctChars / elapsedMinutes);
   const totalJudgedChars = stats.correctChars + stats.wrongChars;
   const accuracy = totalJudgedChars === 0 ? 100 : round2((stats.correctChars / totalJudgedChars) * 100);
   const score = calculateScore({
-    wpm,
+    lpm,
     accuracy,
     wrongChars: stats.wrongChars,
     maxCombo: stats.maxCombo,
     longPauseCount: stats.longPauseCount
   });
 
-  return { ...stats, rawWpm, wpm, accuracy, score };
+  return { ...stats, rawLpm, lpm, accuracy, score };
 };
+

@@ -66,3 +66,4 @@ export const applyBackspace = (currentIndex: number, stats: RunStats): { nextInd
     }
   };
 };
+

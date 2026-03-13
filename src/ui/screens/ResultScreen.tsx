@@ -13,8 +13,8 @@ export const ResultScreen = ({ stats, history, best, onBackToMenu }: ResultScree
   <section className="result-screen card">
     <h2>Run Complete</h2>
     <div className="result-grid">
-      <div>Raw WPM: <strong>{stats.rawWpm}</strong></div>
-      <div>WPM: <strong>{stats.wpm}</strong></div>
+      <div>Raw LPM: <strong>{stats.rawLpm}</strong></div>
+      <div>LPM: <strong>{stats.lpm}</strong></div>
       <div>Accuracy: <strong>{stats.accuracy}%</strong></div>
       <div>Score: <strong>{stats.score}</strong></div>
       <div>Max Combo: <strong>{stats.maxCombo}</strong></div>
@@ -35,3 +35,4 @@ export const ResultScreen = ({ stats, history, best, onBackToMenu }: ResultScree
     <button onClick={onBackToMenu}>Back to Menu</button>
   </section>
 );
+

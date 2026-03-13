@@ -8,3 +8,4 @@ export const CountdownScreen = ({ value }: CountdownScreenProps) => (
     <strong>{value}</strong>
   </section>
 );
+

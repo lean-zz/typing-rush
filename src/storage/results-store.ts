@@ -29,3 +29,4 @@ export const appendResult = (config: RunConfig, stats: RunStats): ResultRecord =
   localStorage.setItem(RESULTS_KEY, JSON.stringify(next));
   return record;
 };
+

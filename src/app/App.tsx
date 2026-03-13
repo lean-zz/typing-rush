@@ -3,10 +3,9 @@ import './styles.css';
 import { aggregateBestResults } from '../storage/record-aggregator';
 import { appendResult, loadResults } from '../storage/results-store';
 import { defaultSettings, loadSettings, saveSettings, type AppSettings } from '../storage/settings-store';
-import { nextScreen, createRunSession, applyInputToSession, tickSession } from './app-state';
+import { nextScreen, createRunSession, applyInputToSession, startTimerOnFirstInput, tickSession, applyControlKey } from './app-state';
 import type { ResultRecord, RunConfig, RunSession } from '../types';
 import { MenuScreen } from '../ui/screens/MenuScreen';
-import { CountdownScreen } from '../ui/screens/CountdownScreen';
 import { GameScreen } from '../ui/screens/GameScreen';
 import { ResultScreen } from '../ui/screens/ResultScreen';
 import { playSound } from '../ui/sound';
@@ -37,35 +36,6 @@ export const App = () => {
   const [state, setState] = useState<AppState>(initialState);
 
   useEffect(() => {
-    if (state.screen !== 'countdown') {
-      return;
-    }
-
-    const timer = window.setInterval(() => {
-      setState((prev) => {
-        if (prev.countdown <= 1) {
-          playSound(prev.settings.soundEnabled, 'start');
-          if (!prev.session) {
-            return { ...prev, screen: 'menu' };
-          }
-
-          const now = Date.now();
-          return {
-            ...prev,
-            screen: nextScreen(prev.screen, 'COUNTDOWN_DONE'),
-            countdown: 3,
-            session: { ...prev.session, startedAt: now, lastTickAt: now }
-          };
-        }
-
-        return { ...prev, countdown: prev.countdown - 1 };
-      });
-    }, 1000);
-
-    return () => window.clearInterval(timer);
-  }, [state.screen]);
-
-  useEffect(() => {
     if (state.screen !== 'playing' || !state.session) {
       return;
     }
@@ -73,6 +43,10 @@ export const App = () => {
     const timer = window.setInterval(() => {
       setState((prev) => {
         if (prev.screen !== 'playing' || !prev.session) {
+          return prev;
+        }
+
+        if (prev.session.stats.totalTypedChars <= 0) {
           return prev;
         }
 
@@ -121,9 +95,10 @@ export const App = () => {
 
   const handleStart = (config: RunConfig) => {
     const now = Date.now();
+    playSound(state.settings.soundEnabled, 'start');
     setState((prev) => ({
       ...prev,
-      screen: nextScreen(prev.screen, 'START_COUNTDOWN'),
+      screen: 'playing',
       countdown: 3,
       session: createRunSession(config, now)
     }));
@@ -139,7 +114,20 @@ export const App = () => {
       return;
     }
 
-    const allowed = event.key.length === 1 || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'Tab';
+    const controlResult = applyControlKey(state.screen, state.session, event.key, Date.now());
+    if (controlResult.handled) {
+      event.preventDefault();
+      setState((prev) => ({
+        ...prev,
+        screen: controlResult.screen,
+        session: controlResult.session
+      }));
+      return;
+    }
+
+    const isEnglishMode = state.session.config.language === 'english';
+    const allowed =
+      event.key.length === 1 || event.key === 'Backspace' || event.key === 'Tab' || (!isEnglishMode && event.key === 'Enter');
     if (!allowed) {
       return;
     }
@@ -150,17 +138,19 @@ export const App = () => {
       return;
     }
 
+    const inputAt = Date.now();
     const beforeWrong = state.session.stats.wrongChars;
-    const nextSession = applyInputToSession(state.session, event.key, Date.now());
+    const nextSession = applyInputToSession(state.session, event.key, inputAt);
+    const sessionWithTimer = startTimerOnFirstInput(state.session, nextSession, inputAt);
 
     if (event.key === 'Backspace') {
-      return setState((prev) => ({ ...prev, session: nextSession }));
+      return setState((prev) => ({ ...prev, session: sessionWithTimer }));
     }
 
-    const soundType = nextSession.stats.wrongChars > beforeWrong ? 'error' : 'hit';
+    const soundType = sessionWithTimer.stats.wrongChars > beforeWrong ? 'error' : 'hit';
     playSound(state.settings.soundEnabled, soundType);
 
-    setState((prev) => ({ ...prev, session: nextSession }));
+    setState((prev) => ({ ...prev, session: sessionWithTimer }));
   };
 
   const handleResume = () => {
@@ -193,8 +183,6 @@ export const App = () => {
         <MenuScreen settings={state.settings} onSaveSettings={handleSaveSettings} onStart={handleStart} />
       ) : null}
 
-      {state.screen === 'countdown' ? <CountdownScreen value={state.countdown} /> : null}
-
       {(state.screen === 'playing' || state.screen === 'paused') && state.session ? (
         <GameScreen session={state.session} paused={state.screen === 'paused'} onInput={handleInput} onResume={handleResume} />
       ) : null}
@@ -212,4 +200,5 @@ export const App = () => {
 };
 
 export default App;
+
 

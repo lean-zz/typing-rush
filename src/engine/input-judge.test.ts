@@ -22,3 +22,4 @@ describe('input judge', () => {
     expect(result.stats.correctChars).toBe(1);
   });
 });
+

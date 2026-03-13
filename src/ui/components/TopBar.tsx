@@ -12,3 +12,4 @@ export const TopBar = ({ config }: TopBarProps) => (
     <span>{config.soundEnabled ? 'sound:on' : 'sound:off'}</span>
   </header>
 );
+

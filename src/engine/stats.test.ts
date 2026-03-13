@@ -3,7 +3,7 @@ import { createInitialStats } from './stats-base';
 import { recalculateLiveStats } from './stats';
 
 describe('recalculateLiveStats', () => {
-  it('calculates wpm and accuracy from typed chars', () => {
+  it('calculates lpm and accuracy from typed chars', () => {
     const base = createInitialStats();
     const stats = recalculateLiveStats(
       {
@@ -16,9 +16,10 @@ describe('recalculateLiveStats', () => {
       60000
     );
 
-    expect(stats.rawWpm).toBe(10);
-    expect(stats.wpm).toBe(8);
+    expect(stats.rawLpm).toBe(50);
+    expect(stats.lpm).toBe(40);
     expect(stats.accuracy).toBe(80);
     expect(stats.score).toBeGreaterThan(0);
   });
 });
+

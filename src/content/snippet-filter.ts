@@ -4,3 +4,4 @@ export const normalizeSnippetText = (content: string): string => content.replace
 
 export const filterSnippets = (snippets: Snippet[], language: Language, difficulty: Difficulty): Snippet[] =>
   snippets.filter((snippet) => snippet.language === language && snippet.difficulty === difficulty);
+

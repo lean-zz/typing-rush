@@ -18,3 +18,4 @@ export const HistoryPanel = ({ results }: HistoryPanelProps) => (
     </ul>
   </section>
 );
+

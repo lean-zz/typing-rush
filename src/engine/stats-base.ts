@@ -5,8 +5,8 @@ export const createInitialStats = (): RunStats => ({
   correctChars: 0,
   wrongChars: 0,
   backspaceCount: 0,
-  rawWpm: 0,
-  wpm: 0,
+  rawLpm: 0,
+  lpm: 0,
   accuracy: 100,
   score: 0,
   combo: 0,
@@ -17,3 +17,4 @@ export const createInitialStats = (): RunStats => ({
 });
 
 export const round2 = (value: number): number => Math.round(value * 100) / 100;
+

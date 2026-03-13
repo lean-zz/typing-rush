@@ -90,6 +90,114 @@ const pyHardBuilders: Builder[] = [
   (i) => ({ title: `Lambda sort ${i}`, content: `rows_${i} = [(1, 'a'), (3, 'b'), (2, 'c')]\nrows_${i}.sort(key=lambda x: x[0])`, tags: ['lambda', 'sort'] })
 ];
 
+const buildArticleFromPool = (pool: string[], startOffset: number, lineCount: number): string =>
+  Array.from({ length: lineCount }, (_, lineIdx) => pool[(startOffset + lineIdx) % pool.length]).join('\n');
+
+const englishEasyPool = [
+  'Typing slowly at first helps your fingers remember each key.',
+  'A steady pace is better than a fast pace that breaks every few words.',
+  'When your shoulders relax, your hands usually move with less tension.',
+  'Read the next phrase with your eyes before your fingers reach it.',
+  'Short daily practice builds stronger habits than one long weekend session.',
+  'After 5 minutes, rest your eyes for 20 seconds and then continue.',
+  'Simple sentences are useful because they let you focus on rhythm.',
+  'Press space with a light touch and keep your wrists level.',
+  'Good posture can reduce pain and improve typing control.',
+  'If you miss a word, correct it and return to a calm flow.',
+  'Clear punctuation makes each sentence easier to scan quickly.',
+  'A warm keyboard often feels easier after the first few lines.',
+  'Train accuracy first, then increase speed in small steps.',
+  'The goal is not perfect text, but consistent progress every day.',
+  'A brief pause can help when your focus starts to drift.',
+  'Quiet breathing can keep your tempo smooth during long runs.',
+  'Your hands learn patterns faster when you repeat common words.',
+  'Use a gentle key press so your fingers stay fresh.',
+  'Strong habits come from repetition, feedback, and patience.',
+  'Small improvements each week create a big change over time.',
+  'Track your errors and notice which letters fail most often.',
+  'Try to keep your eyes on the current line, not the keyboard.',
+  'A focused ten-minute session can be surprisingly effective.',
+  'You can build speed safely by raising your target one step at a time.'
+];
+
+const englishMediumPool = [
+  'Although speed feels exciting, reliable accuracy usually predicts long-term growth.',
+  'When a paragraph contains commas, your timing must adapt without breaking your flow.',
+  'A practical routine includes warm-up lines, focused drills, and a brief cooldown.',
+  'If your rhythm collapses after an error, pause for one breath and restart cleanly.',
+  'Many typists improve faster when they review mistakes at the end of each run.',
+  'The most useful feedback is specific, measurable, and connected to daily habits.',
+  'As your confidence rises, increase difficulty with longer clauses and denser punctuation.',
+  'A balanced session trains speed, control, and attention in roughly equal measure.',
+  'Writers who draft quickly still benefit from precise keystrokes during revision.',
+  'Even in a short practice block, consistency matters more than dramatic bursts.',
+  'Because fatigue builds quietly, smart typists manage effort before errors explode.',
+  'Complex sentences demand stronger eye tracking across clauses and transitions.',
+  'If you can maintain calm under pressure, your output remains stable for longer.',
+  'Good technique feels light, deliberate, and repeatable under different workloads.',
+  'Measure progress weekly so small gains become visible and motivating.',
+  'When punctuation increases, your hands must coordinate symbols with clear intent.',
+  'A disciplined workflow turns random practice into steady skill acquisition.',
+  'Most plateaus break when you reduce tension and restore clean fundamentals.',
+  'Useful drills combine familiar vocabulary with uncommon character patterns.',
+  'If one finger falls behind, isolate that motion and retrain it slowly.',
+  'High-quality sessions end before concentration drops below a reliable threshold.',
+  'You can improve endurance by extending focused practice in small increments.',
+  'Consistent recovery habits protect performance over months of practice.',
+  'During longer passages, maintain a stable cadence instead of chasing spikes.'
+];
+
+const englishHardPool = [
+  'In performance-critical writing contexts, disciplined keystroke economy can preserve both precision and cognitive bandwidth.',
+  'Because advanced prose contains nested clauses, punctuation density, and subtle transitions, typists must coordinate anticipation with restraint.',
+  'A robust practice protocol alternates high-load passages with controlled recovery, thereby reducing error cascades under sustained pressure.',
+  'When attention fragments across structure and semantics, execution quality degrades unless rhythm is deliberately re-centered.',
+  'Skilled operators treat correction as a measured intervention, not an emotional interruption, even after conspicuous mistakes.',
+  'While raw speed attracts attention, resilient throughput depends on stable mechanics, visual planning, and low-friction recovery loops.',
+  'The interaction between syntax complexity and motor timing becomes especially visible during long-form, punctuation-heavy narration.',
+  'Strategic pacing matters: if early tempo is excessive, downstream accuracy typically collapses before the final section.',
+  'Experts often segment a paragraph into semantic units, then map finger motion to those units with near-metronomic control.',
+  'Under fatigue, minor deviations compound quickly; therefore, micro-adjustments in posture and force are operationally significant.',
+  'Training data suggests that intentional variability, applied carefully, improves transfer across unfamiliar lexical distributions.',
+  'If a passage introduces multiple emulations of formal tone, execution must remain consistent despite stylistic shifts.',
+  'High-integrity typing systems prioritize repeatability, observability, and bounded error recovery over temporary speed inflation.',
+  'Long-duration sessions expose hidden inefficiencies in reach patterns, especially around punctuation and uncommon letter pairs.',
+  'As complexity increases, the ability to preserve cadence through subordinate clauses becomes a meaningful differentiator.',
+  'A well-calibrated routine treats pauses as control points, not failures, and re-enters flow with explicit intent.',
+  'When lexical novelty rises, pre-reading half a line ahead can stabilize motor planning without reducing tempo.',
+  'Sustained excellence requires balancing ambition with mechanical discipline, particularly beyond the 10-minute threshold.',
+  'Operational fluency emerges when attention allocation, error handling, and rhythm management converge into a single habit.',
+  'Even elite practitioners revisit fundamentals; precision under pressure is maintained through deliberate, structured repetition.',
+  'In dense analytical prose, typists should preserve sentence architecture while executing symbols with minimal hesitation.',
+  'Controlled breathing and ergonomic neutrality can materially reduce drift in extended high-focus runs.',
+  'A mature workflow records failure patterns, updates drills, and validates gains through repeatable benchmarks.',
+  'Ultimately, advanced typing is not merely fast text entry; it is sustained, verifiable control across complexity.'
+];
+
+const englishEasyBuilders: Builder[] = [
+  (i) => ({
+    title: `English article easy ${i}`,
+    content: buildArticleFromPool(englishEasyPool, i % englishEasyPool.length, 14),
+    tags: ['english', 'article', 'flow']
+  })
+];
+
+const englishMediumBuilders: Builder[] = [
+  (i) => ({
+    title: `English article medium ${i}`,
+    content: buildArticleFromPool(englishMediumPool, i % englishMediumPool.length, 16),
+    tags: ['english', 'article', 'punctuation']
+  })
+];
+
+const englishHardBuilders: Builder[] = [
+  (i) => ({
+    title: `English article hard ${i}`,
+    content: buildArticleFromPool(englishHardPool, i % englishHardPool.length, 18),
+    tags: ['english', 'article', 'advanced']
+  })
+];
+
 export const SNIPPETS: Snippet[] = [
   ...buildPack('javascript', 'easy', jsEasyBuilders),
   ...buildPack('javascript', 'medium', jsMediumBuilders),
@@ -99,5 +207,9 @@ export const SNIPPETS: Snippet[] = [
   ...buildPack('typescript', 'hard', tsHardBuilders),
   ...buildPack('python', 'easy', pyEasyBuilders),
   ...buildPack('python', 'medium', pyMediumBuilders),
-  ...buildPack('python', 'hard', pyHardBuilders)
+  ...buildPack('python', 'hard', pyHardBuilders),
+  ...buildPack('english', 'easy', englishEasyBuilders),
+  ...buildPack('english', 'medium', englishMediumBuilders),
+  ...buildPack('english', 'hard', englishHardBuilders)
 ];
+

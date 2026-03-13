@@ -29,3 +29,4 @@ export const playSound = (enabled: boolean, type: 'hit' | 'error' | 'start' | 'f
   if (type === 'start') beep(680, 100);
   if (type === 'finish') beep(180, 220);
 };
+

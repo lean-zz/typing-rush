@@ -40,3 +40,4 @@ export const toRunConfig = (settings: AppSettings): RunConfig => ({
   difficulty: settings.defaultDifficulty,
   soundEnabled: settings.soundEnabled
 });
+

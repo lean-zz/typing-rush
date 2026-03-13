@@ -30,3 +30,4 @@ export const transition = (state: AppState, event: AppEvent): AppState => {
       return state;
   }
 };
+

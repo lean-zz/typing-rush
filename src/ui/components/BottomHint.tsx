@@ -9,3 +9,4 @@ export const BottomHint = ({ message, tags }: BottomHintProps) => (
     <span>{tags.join(' · ')}</span>
   </footer>
 );
+

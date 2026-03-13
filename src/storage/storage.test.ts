@@ -24,8 +24,8 @@ describe('storage', () => {
       correctChars: 9,
       wrongChars: 1,
       backspaceCount: 0,
-      rawWpm: 12,
-      wpm: 10,
+      rawLpm: 12,
+      lpm: 10,
       accuracy: 90,
       score: 100,
       combo: 0,
@@ -40,8 +40,8 @@ describe('storage', () => {
       correctChars: 9,
       wrongChars: 1,
       backspaceCount: 0,
-      rawWpm: 13,
-      wpm: 11,
+      rawLpm: 13,
+      lpm: 11,
       accuracy: 90,
       score: 150,
       combo: 0,
@@ -58,3 +58,4 @@ describe('storage', () => {
     expect(best.byDuration[config.durationMs]?.stats.score).toBe(150);
   });
 });
+

@@ -23,3 +23,4 @@ export const aggregateBestResults = (results: ResultRecord[]): BestSummary => {
 
   return { byDuration, byLanguage };
 };
+
