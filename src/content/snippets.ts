@@ -91,7 +91,7 @@ const pyHardBuilders: Builder[] = [
 ];
 
 const buildArticleFromPool = (pool: string[], startOffset: number, lineCount: number): string =>
-  Array.from({ length: lineCount }, (_, lineIdx) => pool[(startOffset + lineIdx) % pool.length]).join('\n');
+  Array.from({ length: lineCount }, (_, lineIdx) => pool[(startOffset + lineIdx) % pool.length]).join(' ');
 
 const englishEasyPool = [
   'Typing slowly at first helps your fingers remember each key.',

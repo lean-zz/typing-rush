@@ -1,6 +1,6 @@
 ﻿export type Language = 'javascript' | 'typescript' | 'python' | 'english';
 export type Difficulty = 'easy' | 'medium' | 'hard';
-export type RunDuration = 300000 | 600000;
+export type RunDuration = number;
 export type AppScreen = 'menu' | 'countdown' | 'playing' | 'paused' | 'result';
 
 export type Snippet = {
@@ -17,6 +17,7 @@ export type RunConfig = {
   language: Language;
   difficulty: Difficulty;
   soundEnabled: boolean;
+  snippetId?: string;
 };
 
 export type RunStats = {
@@ -27,7 +28,6 @@ export type RunStats = {
   rawLpm: number;
   lpm: number;
   accuracy: number;
-  score: number;
   combo: number;
   maxCombo: number;
   completedSnippets: number;
@@ -57,5 +57,3 @@ export type RunSession = {
   feedbackMessage: string;
   lastFeedbackMinute: number;
 };
-
-

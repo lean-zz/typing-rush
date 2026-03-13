@@ -1,5 +1,7 @@
 ﻿let audioCtx: AudioContext | null = null;
 
+export type SoundEventType = 'hit' | 'error' | 'start' | 'finish';
+
 const beep = (frequency: number, durationMs: number): void => {
   if (typeof window === 'undefined') {
     return;
@@ -19,7 +21,7 @@ const beep = (frequency: number, durationMs: number): void => {
   oscillator.stop(audioCtx.currentTime + durationMs / 1000);
 };
 
-export const playSound = (enabled: boolean, type: 'hit' | 'error' | 'start' | 'finish'): void => {
+export const playSound = (enabled: boolean, type: SoundEventType): void => {
   if (!enabled) {
     return;
   }
@@ -29,4 +31,3 @@ export const playSound = (enabled: boolean, type: 'hit' | 'error' | 'start' | 'f
   if (type === 'start') beep(680, 100);
   if (type === 'finish') beep(180, 220);
 };
-

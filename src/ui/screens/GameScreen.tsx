@@ -11,9 +11,10 @@ type GameScreenProps = {
   paused: boolean;
   onInput: (event: KeyboardEvent<HTMLDivElement>) => void;
   onResume: () => void;
+  onBackToMenu: () => void;
 };
 
-export const GameScreen = ({ session, paused, onInput, onResume }: GameScreenProps) => {
+export const GameScreen = ({ session, paused, onInput, onResume, onBackToMenu }: GameScreenProps) => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -37,7 +38,7 @@ export const GameScreen = ({ session, paused, onInput, onResume }: GameScreenPro
 
   return (
     <section className="game-screen">
-      <TopBar config={session.config} />
+      <TopBar config={session.config} onBackToMenu={onBackToMenu} />
       <div className="game-layout" ref={rootRef} tabIndex={0} onKeyDown={onInput}>
         <canvas className="practice-canvas" ref={canvasRef} />
         <HudPanel stats={session.stats} timeRemainingMs={session.timeRemainingMs} />

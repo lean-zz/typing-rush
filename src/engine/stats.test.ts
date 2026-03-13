@@ -19,7 +19,6 @@ describe('recalculateLiveStats', () => {
     expect(stats.rawLpm).toBe(50);
     expect(stats.lpm).toBe(40);
     expect(stats.accuracy).toBe(80);
-    expect(stats.score).toBeGreaterThan(0);
   });
 });
 

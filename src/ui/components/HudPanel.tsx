@@ -16,10 +16,9 @@ export const HudPanel = ({ stats, timeRemainingMs }: HudPanelProps) => {
   return (
     <section className="hud-panel">
       <div><span>Time</span><strong>{toClock(timeRemainingMs)}</strong></div>
-      <div><span>Raw LPM</span><strong>{stats.rawLpm}</strong></div>
-      <div><span>LPM</span><strong>{stats.lpm}</strong></div>
+      <div><span>Raw KPM</span><strong>{stats.rawLpm}</strong></div>
+      <div><span>KPM</span><strong>{stats.lpm}</strong></div>
       <div><span>Accuracy</span><strong>{stats.accuracy}%</strong></div>
-      <div><span>Score</span><strong>{stats.score}</strong></div>
       <div><span>Combo</span><strong>{stats.combo}</strong></div>
       <div><span>Max Combo</span><strong>{stats.maxCombo}</strong></div>
       <div><span>Completed</span><strong>{stats.completedSnippets}</strong></div>

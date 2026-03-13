@@ -4,7 +4,7 @@ import { recalculateLiveStats } from '../engine/stats';
 import { applyBackspace, applyTypingInput } from '../engine/input-judge';
 import { filterSnippets, normalizeSnippetText } from '../content/snippet-filter';
 import { SNIPPETS } from '../content/snippets';
-import { takeNextSnippet, type QueueState } from '../content/snippet-queue';
+import { refillQueue, takeNextSnippet, type QueueState } from '../content/snippet-queue';
 import type { AppScreen, RunConfig, RunSession } from '../types';
 
 export type AppModel = {
@@ -23,7 +23,16 @@ const createInitialQueue = (): QueueState => ({ queueOfNextSnippets: [], recentS
 
 export const createRunSession = (config: RunConfig, now: number): RunSession => {
   const filtered = filterSnippets(SNIPPETS, config.language, config.difficulty);
-  const first = takeNextSnippet(filtered, createInitialQueue());
+  const selectedSnippet = config.snippetId ? filtered.find((snippet) => snippet.id === config.snippetId) : undefined;
+  const first = selectedSnippet
+    ? {
+        snippet: selectedSnippet,
+        state: refillQueue(filtered, {
+          queueOfNextSnippets: [],
+          recentSnippetIds: [selectedSnippet.id]
+        })
+      }
+    : takeNextSnippet(filtered, createInitialQueue());
 
   return {
     config,

@@ -1,10 +1,10 @@
-﻿import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import './styles.css';
-import { aggregateBestResults } from '../storage/record-aggregator';
+import { aggregateBestResults, aggregateMenuScoreSummary } from '../storage/record-aggregator';
 import { appendResult, loadResults } from '../storage/results-store';
-import { defaultSettings, loadSettings, saveSettings, type AppSettings } from '../storage/settings-store';
+import { defaultSettings, loadSettings, saveSettings, toRunConfig, type AppSettings } from '../storage/settings-store';
 import { nextScreen, createRunSession, applyInputToSession, startTimerOnFirstInput, tickSession, applyControlKey } from './app-state';
-import type { ResultRecord, RunConfig, RunSession } from '../types';
+import type { ResultRecord, RunConfig, RunSession, RunStats } from '../types';
 import { MenuScreen } from '../ui/screens/MenuScreen';
 import { GameScreen } from '../ui/screens/GameScreen';
 import { ResultScreen } from '../ui/screens/ResultScreen';
@@ -14,7 +14,10 @@ type AppState = {
   screen: 'menu' | 'countdown' | 'playing' | 'paused' | 'result';
   countdown: number;
   settings: AppSettings;
+  menuDraft: AppSettings;
   session: RunSession | null;
+  currentRunId: string | null;
+  pendingResult: { runId: string; config: RunConfig; stats: RunStats } | null;
   latestResult: ResultRecord | null;
   history: ResultRecord[];
 };
@@ -26,7 +29,10 @@ const initialState = (): AppState => {
     screen: 'menu',
     countdown: 3,
     settings,
+    menuDraft: settings,
     session: null,
+    currentRunId: null,
+    pendingResult: null,
     latestResult: null,
     history
   };
@@ -55,15 +61,17 @@ export const App = () => {
           return { ...prev, session: ticked.session };
         }
 
-        playSound(prev.settings.soundEnabled, 'finish');
-        const record = appendResult(ticked.session.config, ticked.session.stats);
-        const history = loadResults();
-
         return {
           ...prev,
           session: ticked.session,
-          latestResult: record,
-          history,
+          pendingResult:
+            prev.currentRunId === null
+              ? null
+              : {
+                  runId: prev.currentRunId,
+                  config: ticked.session.config,
+                  stats: ticked.session.stats
+                },
           screen: nextScreen(prev.screen, 'FINISH')
         };
       });
@@ -71,6 +79,30 @@ export const App = () => {
 
     return () => window.clearInterval(timer);
   }, [state.screen, state.session]);
+
+  useEffect(() => {
+    if (!state.pendingResult) {
+      return;
+    }
+
+    playSound(state.settings.soundEnabled, 'finish');
+    const record = appendResult(state.pendingResult.config, state.pendingResult.stats);
+    const history = loadResults();
+    const runId = state.pendingResult.runId;
+
+    setState((prev) => {
+      if (!prev.pendingResult || prev.pendingResult.runId !== runId) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        latestResult: record,
+        history,
+        pendingResult: null
+      };
+    });
+  }, [state.pendingResult, state.settings.soundEnabled]);
 
   useEffect(() => {
     const onBlur = () => {
@@ -92,21 +124,29 @@ export const App = () => {
   }, []);
 
   const best = useMemo(() => aggregateBestResults(state.history), [state.history]);
+  const menuScoreSummary = useMemo(
+    () => aggregateMenuScoreSummary(state.history, toRunConfig(state.menuDraft)),
+    [state.history, state.menuDraft]
+  );
 
   const handleStart = (config: RunConfig) => {
     const now = Date.now();
-    playSound(state.settings.soundEnabled, 'start');
+    const runId = crypto.randomUUID();
+    playSound(state.menuDraft.soundEnabled, 'start');
     setState((prev) => ({
       ...prev,
       screen: 'playing',
       countdown: 3,
-      session: createRunSession(config, now)
+      session: createRunSession(config, now),
+      currentRunId: runId,
+      pendingResult: null,
+      latestResult: null
     }));
   };
 
   const handleSaveSettings = (settings: AppSettings) => {
     saveSettings(settings);
-    setState((prev) => ({ ...prev, settings }));
+    setState((prev) => ({ ...prev, settings, menuDraft: settings }));
   };
 
   const handleInput = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -171,7 +211,10 @@ export const App = () => {
     setState((prev) => ({
       ...prev,
       screen: 'menu',
+      menuDraft: prev.settings,
       session: null,
+      currentRunId: null,
+      pendingResult: null,
       countdown: 3,
       history: loadResults()
     }));
@@ -180,11 +223,23 @@ export const App = () => {
   return (
     <main className="app-shell">
       {state.screen === 'menu' ? (
-        <MenuScreen settings={state.settings} onSaveSettings={handleSaveSettings} onStart={handleStart} />
+        <MenuScreen
+          settings={state.menuDraft}
+          scoreSummary={menuScoreSummary}
+          onChangeSettings={(settings) => setState((prev) => ({ ...prev, menuDraft: settings }))}
+          onSaveSettings={handleSaveSettings}
+          onStart={handleStart}
+        />
       ) : null}
 
       {(state.screen === 'playing' || state.screen === 'paused') && state.session ? (
-        <GameScreen session={state.session} paused={state.screen === 'paused'} onInput={handleInput} onResume={handleResume} />
+        <GameScreen
+          session={state.session}
+          paused={state.screen === 'paused'}
+          onInput={handleInput}
+          onResume={handleResume}
+          onBackToMenu={handleBackToMenu}
+        />
       ) : null}
 
       {state.screen === 'result' && state.session ? (
@@ -200,5 +255,3 @@ export const App = () => {
 };
 
 export default App;
-
-

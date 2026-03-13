@@ -8,7 +8,6 @@ export const createInitialStats = (): RunStats => ({
   rawLpm: 0,
   lpm: 0,
   accuracy: 100,
-  score: 0,
   combo: 0,
   maxCombo: 0,
   completedSnippets: 0,

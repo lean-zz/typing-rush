@@ -1,4 +1,3 @@
-﻿import { calculateScore } from './score';
 import { round2 } from './stats-base';
 import type { RunStats } from '../types';
 
@@ -8,14 +7,6 @@ export const recalculateLiveStats = (stats: RunStats, elapsedMs: number): RunSta
   const lpm = round2(stats.correctChars / elapsedMinutes);
   const totalJudgedChars = stats.correctChars + stats.wrongChars;
   const accuracy = totalJudgedChars === 0 ? 100 : round2((stats.correctChars / totalJudgedChars) * 100);
-  const score = calculateScore({
-    lpm,
-    accuracy,
-    wrongChars: stats.wrongChars,
-    maxCombo: stats.maxCombo,
-    longPauseCount: stats.longPauseCount
-  });
 
-  return { ...stats, rawLpm, lpm, accuracy, score };
+  return { ...stats, rawLpm, lpm, accuracy };
 };
-

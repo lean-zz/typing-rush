@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { applyControlKey, applyInputToSession, nextScreen, startTimerOnFirstInput } from './app-state';
+import { applyControlKey, applyInputToSession, createRunSession, nextScreen, startTimerOnFirstInput } from './app-state';
 import { createInitialStats } from '../engine/stats-base';
+import { SNIPPETS } from '../content/snippets';
 import type { Language, RunConfig, RunSession, Snippet } from '../types';
 
 const createSession = (language: Language, content: string, currentIndex: number): RunSession => {
@@ -108,5 +109,41 @@ describe('app state timer arming', () => {
     const armed = startTimerOnFirstInput(previous, next, 2000);
     expect(armed.lastTickAt).toBe(previous.lastTickAt);
     expect(armed.startedAt).toBe(previous.startedAt);
+  });
+});
+
+describe('app state selected snippet', () => {
+  it('uses selected snippet as the first snippet when snippetId is provided', () => {
+    const target = SNIPPETS.find((snippet) => snippet.language === 'english' && snippet.difficulty === 'easy');
+    expect(target).toBeTruthy();
+
+    const session = createRunSession(
+      {
+        durationMs: 300000,
+        language: 'english',
+        difficulty: 'easy',
+        soundEnabled: false,
+        snippetId: target!.id
+      },
+      123
+    );
+
+    expect(session.currentSnippet.id).toBe(target!.id);
+  });
+
+  it('falls back to pool when snippetId is not found', () => {
+    const session = createRunSession(
+      {
+        durationMs: 300000,
+        language: 'python',
+        difficulty: 'hard',
+        soundEnabled: false,
+        snippetId: 'not-exists'
+      },
+      123
+    );
+
+    expect(session.currentSnippet.language).toBe('python');
+    expect(session.currentSnippet.difficulty).toBe('hard');
   });
 });
